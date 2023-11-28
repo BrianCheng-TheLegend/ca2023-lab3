@@ -149,6 +149,7 @@ class InstructionDecode extends Module {
   io.regs_reg2_read_address := rs2
   val immediate = MuxLookup(
     opcode,
+    // get the (31,20) instruction and extend with the 31's bits to 32-bits 
     Cat(Fill(20, io.instruction(31)), io.instruction(31, 20)),
     IndexedSeq(
       InstructionTypes.I -> Cat(Fill(21, io.instruction(31)), io.instruction(30, 20)),
@@ -195,7 +196,8 @@ class InstructionDecode extends Module {
   )
 
   // lab3(InstructionDecode) begin
-
+  io.memory_read_enable := (opcode===InstructionTypes.L)
+  io.memory_write_enable := (opcode===InstructionTypes.S)
   // lab3(InstructionDecode) end
 
   io.wb_reg_write_source := MuxCase(
